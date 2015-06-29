@@ -1,0 +1,7 @@
+<users>
+  <user>
+    <id>ca690acb-3a62-4e38-ba0c-633ce0b9ac84</id>
+    <email>TEST@TEST.COM</email>
+    <password>AQAAAAEAACcQAAAAEPjLSRPWcAlIly7OSXx4uRnwrsTXZIYY8bcetM9RXJsFW+QvWLxJ+VzR8phNkJj2yQ==</password>
+  </user>
+</users>

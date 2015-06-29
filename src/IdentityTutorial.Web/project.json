@@ -1,0 +1,53 @@
+﻿{
+  "webroot": "wwwroot",
+  "version": "1.0.0-*",
+  "packExclude": [
+    "**.kproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "dependencies": {
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta4",
+    "Microsoft.AspNet.Mvc": "6.0.0-beta4",
+    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta4",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta4",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta4",
+    "Microsoft.AspNet.Identity": "3.0.0-beta4",
+    "Microsoft.Framework.Logging.Console": "1.0.0-beta4",
+    "Microsoft.Framework.OptionsModel": "1.0.0-beta4",
+    "Microsoft.AspNet.Http": "1.0.0-beta4",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta4",
+    "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta5",
+    "Microsoft.Framework.ConfigurationModel": "1.0.0-beta5",
+    "IdentityTutorial": "1.0.0-*",
+    "IdentityTutorial.Store": "1.0.0-*",
+    "IdentityTutorial.Core": "1.0.0-*"
+  },
+  "commands": {
+    "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5001"
+  },
+
+  "frameworks": {
+    "dnxcore50": {
+      "dependencies": {
+      }
+    }
+  },
+
+  "exclude": [
+    "wwwroot",
+    "node_modules",
+    "bower_components"
+  ],
+  "publishExclude": [
+    "node_modules",
+    "bower_components",
+    "**.xproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "scripts": {
+    "postrestore": [ "npm install", "bower install" ],
+    "prepare": [ "gulp copy" ]
+  }
+}

@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="color-banner green-sea">
+                <span>Hi there :)</span>
+            </div>
+        </div>
+        <div class="item">
+            <div class="color-banner belize-hole">
+                <span>This is a sample for ASP.Net Identity 3.0 <span class="glyphicon glyphicon-user"></span></span>
+            </div>
+        </div>
+        <div class="item">
+            <div class="color-banner wisteria">
+                <span>Read it here <span class="glyphicon glyphicon-book"></span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Identity tutorial</h2>
+        <p class="lead">This site is running the tutorial code hosted on Github for a Core CLR, MVC 6 and Identity 3.0 system.</p>
+        <p>The site currently supports:</p>
+        <ul>
+            <li>Registration</li>
+            <li>Sign in</li>
+            <li>Sign out</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .color-banner {
+        width: 100%;
+        height: 360px;
+    }
+
+    .color-banner > span {
+        color: white;
+        line-height: 360px;
+        width: 100%;
+        display: block;
+        text-align: center;
+        font-size: 2.6em;
+    }
+
+    .green-sea {
+        background-color: #16a085; 
+    }
+
+    .belize-hole {
+        background-color: #2980b9;
+    }
+
+    .wisteria {
+        background-color: #8e44ad;
+    }
+</style>
