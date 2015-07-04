@@ -11,7 +11,10 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(user, nameof(user));
-            Guard.ArgumentNotNullOrEmpty(email, nameof(email));
+            if (!user.IsExternalUser)
+            {
+                Guard.ArgumentNotNullOrEmpty(email, nameof(email));
+            }
 
             user.UpdateEmail(email);
 
@@ -62,13 +65,7 @@
 
         public Task SetNormalizedEmailAsync(CustomUser user, string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            Guard.ArgumentNotNull(user, nameof(user));
-            Guard.ArgumentNotNullOrEmpty(normalizedEmail, nameof(normalizedEmail));
-
-            user.UpdateEmail(normalizedEmail);
-
-            return Task.CompletedTask;
+            return SetEmailAsync(user, normalizedEmail, cancellationToken);
         }
     }
 }

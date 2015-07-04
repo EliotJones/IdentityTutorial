@@ -9,18 +9,42 @@
     <p>Enter your details to sign-in to the system:</p>
 </div>
 
+@Html.DisplayFor(m => m.Errors)
+
 <div class="row">
-    @using (Html.BeginForm("Login", "Account", new {}, FormMethod.Post, null))
+    @using (Html.BeginForm("Login", "Account", new { }, FormMethod.Post, null))
     {
         @Html.AntiForgeryToken()
         <div class="form-group">
             <label asp-for="Email">Email address:</label>
-            <input asp-for="Email" class="form-control"/>
+            <input asp-for="Email" class="form-control" />
         </div>
         <div class="form-group">
             <label asp-for="Password">Password:</label>
             <input asp-for="Password" class="form-control" />
         </div>
         <button class="btn-success btn" type="submit">Sign in <span class="glyphicon glyphicon-ok"></span></button>
+    }
+</div>
+
+<hr/>
+
+<div class="row">
+    <h2>Social sign-in</h2>
+    <p>You can use the following Social Networks to sign-in:</p>
+    @using (Html.BeginForm("ExternalLogin", "Account"))
+    {
+        @Html.AntiForgeryToken()
+        foreach (var provider in Model.ExternalProviders)
+        {
+            <button type="submit" class="btn btn-info"
+                    id="@provider.AuthenticationScheme"
+                    name="provider"
+                    value="@provider.AuthenticationScheme"
+                    title="Sign in using your @provider.Caption account">
+                @provider.AuthenticationScheme
+                <span class="glyphicon glyphicon-cloud"></span>
+            </button>
+        }
     }
 </div>

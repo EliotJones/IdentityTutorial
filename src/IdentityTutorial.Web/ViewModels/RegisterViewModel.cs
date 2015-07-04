@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class RegisterViewModel
+    public class RegisterViewModel : ViewModel
     {
         [EmailAddress]
         [Required]

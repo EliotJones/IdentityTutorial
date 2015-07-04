@@ -1,5 +1,7 @@
 {
   "AppSettings": {
-    "SiteTitle": "IdentityTutorial Web"
+    "SiteTitle": "IdentityTutorial Web",
+    "FacebookId" :  "794932847288685",
+    "FacebookSecret" :  "11e71871ae718fb51bed2ba0f6e07537"
   }
 }

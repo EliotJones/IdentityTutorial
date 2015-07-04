@@ -6,14 +6,17 @@
     using IdentityTutorial.Store;
     using Xunit;
 
-    public class ContextTests
+    public partial class ContextTests
     {
+        private const string AnyString = "test";
         public static string FirstUserId = "B2019313-BEEB-4344-BEC7-F4E0EEB0CE62";
         public static string FirstUserEmail = "test@test.com";
         public static string FirstUserPassword = "ABCDEFG";
         public static string SecondUserId = "A0010313-BEEB-4344-BEC7-F4E0EEB0CE62";
         public static string SecondUserEmail = "test2@test.com";
         public static string SecondUserPassword = "HASHEDP";
+        public static string SecondUserLoginKey = "7357653";
+        public static string SecondUserLoginProvider = "Toast";
         private readonly Context context;
 
         public ContextTests()
@@ -61,7 +64,7 @@
         {
             var userId = new Guid("56DDA58C-1ACC-4ABF-A3DD-55EDB262159C");
 
-            context.AddUser(new CustomUser(userId, "test3@test.com",
+            context.AddUser(new CustomUser(userId, "test3@test.com", AnyString,
                 string.Empty));
 
             Assert.Contains(userId, context.GetUsers().Select(u => u.Id));
@@ -70,7 +73,7 @@
         [Fact]
         public void AddUser_DuplicateUser_Throws()
         {
-            Assert.Throws<InvalidOperationException>(() => context.AddUser(new CustomUser(new Guid(FirstUserId), SecondUserEmail, string.Empty)));
+            Assert.Throws<InvalidOperationException>(() => context.AddUser(new CustomUser(new Guid(FirstUserId), SecondUserEmail, AnyString, string.Empty)));
         }
 
         [Fact]
@@ -88,7 +91,7 @@
         [Fact]
         public void EditUser_MissingUser_Throws()
         {
-            Assert.Throws<InvalidOperationException>(() => context.UpdateUser(new CustomUser(new Guid("5EE37BB8-6381-47E5-A6D2-4B6D035B1D47"), FirstUserEmail, string.Empty)));
+            Assert.Throws<InvalidOperationException>(() => context.UpdateUser(new CustomUser(new Guid("5EE37BB8-6381-47E5-A6D2-4B6D035B1D47"), FirstUserEmail, AnyString, string.Empty)));
         }
 
         [Fact]
@@ -96,7 +99,7 @@
         {
             var email = "email@email.com";
 
-            context.UpdateUser(new CustomUser(new Guid(FirstUserId), email, string.Empty));
+            context.UpdateUser(new CustomUser(new Guid(FirstUserId), email, AnyString, string.Empty));
 
             Assert.Contains(email, context.GetUsers().Select(u => u.EmailAddress));
         }
@@ -133,7 +136,7 @@
             context.DeleteUser(new Guid(SecondUserId));
 
             Assert.Throws<InvalidOperationException>(
-                () => context.UpdateUser(new CustomUser(new Guid(SecondUserId), "any@email.com", string.Empty)));
+                () => context.UpdateUser(new CustomUser(new Guid(SecondUserId), "any@email.com", AnyString, string.Empty)));
         }
 
         [Fact]
@@ -141,7 +144,7 @@
         {
             var email = "any@b.com";
 
-            context.UpdateUser(new CustomUser(new Guid(SecondUserId), email, string.Empty));
+            context.UpdateUser(new CustomUser(new Guid(SecondUserId), email, AnyString, string.Empty));
 
             Assert.Equal(new Guid(SecondUserId), context.GetUserByEmail(email).Id);
         }

@@ -1,8 +1,10 @@
 ﻿namespace IdentityTutorial.Web.ViewModels
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Microsoft.AspNet.Http.Authentication;
 
-    public class LoginViewModel
+    public class LoginViewModel : ViewModel
     {
         [Required]
         [EmailAddress]
@@ -10,6 +12,8 @@
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; } 
+        public string Password { get; set; }
+
+        public IList<AuthenticationDescription> ExternalProviders { get; set; }
     }
 }

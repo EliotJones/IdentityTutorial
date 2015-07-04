@@ -60,6 +60,11 @@
                 .SingleOrDefault();
         }
 
+        public CustomUser GetUserByName(string userName)
+        {
+            return GetUserElementsByName(userName).Select(xmlUserMap.Map).SingleOrDefault();
+        }
+
         public void AddUser(CustomUser customUser)
         {
             if (customUser == null)
@@ -108,7 +113,13 @@
         private XElement GetUsersParentNode()
         {
             return document.Descendants("users").Single();
-        } 
+        }
+
+        private IEnumerable<XElement> GetUserElementsByName(string userName)
+        {
+            return document.Descendants("name").Where(e => userName.Equals(e.Value, StringComparison.OrdinalIgnoreCase))
+                .Ancestors("user");
+        }
 
         private IEnumerable<XElement> GetUserElementsByEmail(string emailAddress)
         {
