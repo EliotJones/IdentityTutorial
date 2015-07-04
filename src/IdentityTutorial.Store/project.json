@@ -7,7 +7,7 @@
   "licenseUrl": "",
 
   "dependencies": {
-    "System.IO.FileSystem": "4.0.0-beta-22816",
+    "System.IO.FileSystem": "4.0.0-beta-23019",
     "System.Xml.XDocument": "4.0.10-beta-22816",
     "IdentityTutorial.Core": "1.0.0-*",
     "System.Runtime.Extensions": "4.0.10-beta-22906"

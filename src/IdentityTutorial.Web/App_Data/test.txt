@@ -2,6 +2,27 @@
   <user>
     <id>ca690acb-3a62-4e38-ba0c-633ce0b9ac84</id>
     <email>TEST@TEST.COM</email>
+    <name>test@test.com</name>
     <password>AQAAAAEAACcQAAAAEPjLSRPWcAlIly7OSXx4uRnwrsTXZIYY8bcetM9RXJsFW+QvWLxJ+VzR8phNkJj2yQ==</password>
+  </user>
+  <user>
+    <id>51b42d07-16b2-43e7-b490-41b62ae39980</id>
+    <email />
+    <password />
+    <logins>
+      <login>
+        <provider>Facebook</provider>
+        <displayname>Facebook</displayname>
+        <key>10153161191247946</key>
+      </login>
+    </logins>
+    <name>Eliot Jones</name>
+  </user>
+  <user>
+    <id>2187a296-867f-4dc9-9531-6fb4aefd5315</id>
+    <email>SOGGYMAN@TEST.COM</email>
+    <password>AQAAAAEAACcQAAAAEC6KVlXmG1LxAOEEES0DvxP0VFHgIa9lBpKw/z/cLcpwKR8YvAlkSRxTbcZD2clq7A==</password>
+    <logins />
+    <name>SOGGYMAN@TEST.COM</name>
   </user>
 </users>

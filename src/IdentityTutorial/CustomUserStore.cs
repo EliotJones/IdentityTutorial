@@ -9,7 +9,7 @@
 
     public partial class CustomUserStore : IUserStore<CustomUser>
     {
-        private static readonly Task<IdentityResult> IdentityResultTask = Task.FromResult(IdentityResult.Success); 
+        private static readonly Task<IdentityResult> IdentityResultTask = Task.FromResult(IdentityResult.Success);
         private readonly Context context;
 
         public CustomUserStore(Context context)
@@ -34,7 +34,7 @@
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(user, nameof(user));
 
-            return Task.FromResult(user.EmailAddress);
+            return Task.FromResult(user.UserName);
         }
 
         public Task SetUserNameAsync(CustomUser user, string userName, CancellationToken cancellationToken = default(CancellationToken))
@@ -43,7 +43,7 @@
             Guard.ArgumentNotNull(user, nameof(user));
             Guard.ArgumentNotNullOrEmpty(userName, nameof(userName));
 
-            user.UpdateEmail(userName);
+            user.UpdateName(userName);
 
             return Task.CompletedTask;
         }
@@ -53,7 +53,7 @@
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(user, nameof(user));
 
-            return Task.FromResult(user.EmailAddress.ToLowerInvariant());
+            return Task.FromResult(user.UserName.ToUpperInvariant());
         }
 
         public Task SetNormalizedUserNameAsync(CustomUser user, string normalizedName, CancellationToken cancellationToken = default(CancellationToken))
@@ -61,7 +61,7 @@
             cancellationToken.ThrowIfCancellationRequested();
 
             Guard.ArgumentNotNull(user, nameof(user));
-            Guard.ArgumentNotNullOrEmpty(normalizedName, nameof(normalizedName));
+            Guard.ArgumentNotNull(normalizedName, nameof(normalizedName));
 
             //TODO: do we need this?
 
@@ -94,7 +94,7 @@
             Guard.ArgumentNotNull(user, nameof(user));
 
             context.DeleteUser(user.Id);
-            
+
             return IdentityResultTask;
         }
 
@@ -111,7 +111,7 @@
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNullOrEmpty(normalizedUserName, nameof(normalizedUserName));
 
-            return Task.FromResult(context.GetUserByEmail(normalizedUserName));
+            return Task.FromResult(context.GetUserByName(normalizedUserName));
         }
     }
 }

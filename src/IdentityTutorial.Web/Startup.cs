@@ -2,11 +2,11 @@
 {
     using System.IO;
     using Core;
-    using IConfiguration = Microsoft.Framework.ConfigurationModel.IConfiguration;
+    using IConfiguration = Microsoft.Framework.Configuration.IConfiguration;
     using Microsoft.AspNet.Builder;
     using Microsoft.AspNet.Diagnostics;
     using Microsoft.AspNet.Hosting;
-    using Microsoft.Framework.ConfigurationModel;
+    using Microsoft.Framework.Configuration;
     using Microsoft.Framework.DependencyInjection;
     using Microsoft.Framework.Logging;
     using Microsoft.Framework.Runtime;
@@ -17,11 +17,11 @@
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             // Setup configuration sources.
-            var config = new Configuration(appEnv.ApplicationBasePath)
-                // Only available if Microsoft.Framework.ConfigurationModel.Json is referenced in project.json
+            var config = new ConfigurationBuilder(appEnv.ApplicationBasePath)
                 .AddJsonFile("config.json")
-                .AddEnvironmentVariables();
-
+                .AddJsonFile($"config.{env.EnvironmentName}.json", true)
+                .AddEnvironmentVariables()
+                .Build();
             Configuration = config;
             this.appEnv = appEnv;
         }
@@ -34,8 +34,8 @@
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(Configuration.GetSubKey("AppSettings"));
-
+            services.Configure<AppSettings>(Configuration, "AppSettings");
+            
             // Only generate a single instance of the context due to the way it's designed.
             services.AddSingleton(_ => 
             Context.Get(new FileReader(Path.Combine(appEnv.ApplicationBasePath, "App_Data", "test.txt"))));
@@ -48,12 +48,30 @@
                 .AddDefaultTokenProviders()
                 .AddUserStore<CustomUserStore>()
                 .AddRoleStore<CustomRoleStore>();
+
+            var appId = Configuration.GetConfigurationSection("AppSettings").Get("FacebookId");
+            var appSecret = Configuration.GetConfigurationSection("AppSettings").Get("FacebookSecret");
+
+            // Add Facebook logins
+            services.ConfigureFacebookAuthentication(options =>
+            {
+                options.AppId = appId;
+                options.AppSecret = appSecret;
+            });
+
+            services.AddCors();
         }
 
         // Configure is called after ConfigureServices is called.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerfactory)
         {
             // Configure the HTTP request pipeline.
+            app.UseCors(p =>
+            {
+                p.WithOrigins("https://maxcdn.bootstrapcdn.com");
+                p.AllowAnyMethod();
+                p.AllowAnyHeader();
+            });
 
             // Add the console logger.
             loggerfactory.AddConsole();
@@ -71,7 +89,8 @@
             }
             
             app.UseStaticFiles()
-                .UseIdentity();
+                .UseIdentity()
+                .UseFacebookAuthentication();
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>

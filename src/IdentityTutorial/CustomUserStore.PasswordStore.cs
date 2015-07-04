@@ -11,7 +11,10 @@
         {
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(user, nameof(user));
-			Guard.ArgumentNotNullOrEmpty(passwordHash, nameof(passwordHash));
+            if (!user.IsExternalUser)
+            {
+                Guard.ArgumentNotNullOrEmpty(passwordHash, nameof(passwordHash));
+            }
 
 			user.UpdatePasswordHash(passwordHash);
 

@@ -7,7 +7,6 @@
   "licenseUrl": "",
 
   "dependencies": {
-    "System.IO.FileSystem": "4.0.0-beta-22816"
   },
 
   "frameworks" : {
