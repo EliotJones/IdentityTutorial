@@ -25,4 +25,14 @@
     <logins />
     <name>SOGGYMAN@TEST.COM</name>
   </user>
+  <user>
+    <id>809608bb-8325-4439-a7e6-3651d871f339</id>
+    <email>MICKYFINN@MAILINATOR.COM</email>
+    <password>AQAAAAEAACcQAAAAEB5HGfyrKzzK2WgXStRG6eKccbwV/By1P28E1mMnPd32rr++zOQrJ0kCzbOzXYkVnA==</password>
+    <logins />
+    <name>MICKYFINN@MAILINATOR.COM</name>
+    <accessFailedCount>0</accessFailedCount>
+    <lockoutEndDate>2015-07-22T21:06:31.001142Z</lockoutEndDate>
+    <lockoutEnabled>true</lockoutEnabled>
+  </user>
 </users>

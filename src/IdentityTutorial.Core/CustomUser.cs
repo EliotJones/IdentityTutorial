@@ -16,18 +16,27 @@
 
         public string PasswordHash { get; private set; }
 
+        public int AccessFailedCount { get; private set; }
+
+        public DateTimeOffset? LockoutEndDate { get; private set; }
+
+        public bool LockoutEnabled { get; private set; }
+
         private IList<CustomLogin> customLogins;
 
         public IEnumerable<CustomLogin> CustomLogins => customLogins.AsEnumerable().Skip(0);
 
         public bool IsExternalUser { get; private set; }
 
-        public CustomUser(Guid id, string emailAddress, string userName, string passwordHash)
+        public CustomUser(Guid id, string emailAddress, string userName, string passwordHash, int accessFailedCount, DateTimeOffset? lockoutEndDate, bool lockoutEnabled)
         {
             Id = id;
             EmailAddress = emailAddress;
             UserName = userName;
             PasswordHash = passwordHash;
+            AccessFailedCount = accessFailedCount;
+            LockoutEndDate = lockoutEndDate;
+            LockoutEnabled = lockoutEnabled;
             passwordLastUpdated = DateTime.UtcNow;
             customLogins = new List<CustomLogin>();
         }
@@ -36,6 +45,7 @@
         {
             Id = Guid.NewGuid();
             EmailAddress = emailAddress;
+            LockoutEnabled = true;
             UserName = emailAddress;
             customLogins = new List<CustomLogin>();
         }
@@ -46,6 +56,7 @@
             customLogins = new List<CustomLogin> { customLogin };
             IsExternalUser = isExternalUser;
             UserName = userName;
+            LockoutEnabled = true;
         }
 
         public void UpdateName(string userName)
@@ -91,6 +102,34 @@
                                           && cl.ProviderKey.Equals(key, StringComparison.OrdinalIgnoreCase)));
 
             customLogins.RemoveAt(index);
+        }
+
+        public void SetAccessFailedCount(int afc)
+        {
+            if (afc < 0)
+            {
+                throw new InvalidOperationException("Cannot set a negative access failed count.");
+            }
+
+            AccessFailedCount = afc;
+        }
+
+        public void SetLockoutEnabled(bool value)
+        {
+            LockoutEnabled = value;
+        }
+
+        public void SetLockoutEndDate(DateTimeOffset? value)
+        {
+            if (value.HasValue)
+            {
+                LockoutEndDate = value.Value;
+            }
+        }
+
+        public void SetLockoutEndDate(DateTime? value)
+        {
+            LockoutEndDate = value;
         }
 
         public static CustomUser CreateFromExternalSource(CustomLogin customLogin, string userName)
