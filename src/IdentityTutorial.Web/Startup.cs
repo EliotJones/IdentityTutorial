@@ -2,6 +2,7 @@
 {
     using System.IO;
     using Core;
+    using Data;
     using IConfiguration = Microsoft.Framework.Configuration.IConfiguration;
     using Microsoft.AspNet.Builder;
     using Microsoft.AspNet.Diagnostics;
@@ -10,7 +11,6 @@
     using Microsoft.Framework.DependencyInjection;
     using Microsoft.Framework.Logging;
     using Microsoft.Framework.Runtime;
-    using Store;
 
     public class Startup
     {

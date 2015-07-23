@@ -1,4 +1,4 @@
-﻿namespace IdentityTutorial.Store
+﻿namespace IdentityTutorial.Data
 {
     using System.IO;
     using System.Text;

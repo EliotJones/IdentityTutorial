@@ -1,4 +1,4 @@
-﻿namespace IdentityTutorial.Store
+﻿namespace IdentityTutorial.Data
 {
     using System;
     using System.Collections.Generic;
@@ -10,11 +10,11 @@
     public class Context
     {
         private static volatile Context instance;
-        private static object syncRoot = new object();
+        private static readonly object SyncRoot = new object();
 
         private DateTime lastSync;
 
-        private XDocument document;
+        private readonly XDocument document;
         private readonly FileReader fileReader;
         private readonly XmlUserMap xmlUserMap = new XmlUserMap();
 
@@ -30,7 +30,7 @@
         {
             if (instance == null)
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
                     if (instance == null)
                     {
@@ -133,6 +133,21 @@
                 .Ancestors("user");
         }
 
+        private IEnumerable<XElement> GetUserElementsWithClaim(string type, string value)
+        {
+            return document.Descendants("claim").Where(e => e.Descendants("type").Single().Value != null
+                                                            &&
+                                                            e.Descendants("type")
+                                                                .Single()
+                                                                .Value.Equals(type, StringComparison.OrdinalIgnoreCase)
+                                                            && e.Descendants("value").Single().Value != null
+                                                            &&
+                                                            e.Descendants("value")
+                                                                .Single()
+                                                                .Value.Equals(value, StringComparison.OrdinalIgnoreCase))
+                                                                .Ancestors("user");
+        } 
+
         internal static void Reset()
         {
             instance = null;
@@ -153,13 +168,25 @@
         {
             if (DateTime.UtcNow - lastSync >= new TimeSpan(0, 0, 10) || forceSave)
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
                     fileReader.WriteStringToFile(document.ToString(SaveOptions.None));
                 }
 
                 lastSync = DateTime.UtcNow;
             }
+        }
+
+        public IList<CustomUser> GetUsersWithClaim(string type, string value)
+        {
+            var elements = GetUserElementsWithClaim(type, value);
+
+            if (elements == null)
+            {
+                return new CustomUser[] { };
+            }
+
+            return elements.Select(xmlUserMap.Map).ToArray();
         }
     }
 }

@@ -3,14 +3,15 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Core;
+    using JetBrains.Annotations;
     using Microsoft.AspNet.Identity;
 
     public partial class CustomUserStore : IUserPasswordStore<CustomUser>
     {
-        public Task SetPasswordHashAsync(CustomUser user, string passwordHash, CancellationToken cancellationToken = default(CancellationToken))
+        public Task SetPasswordHashAsync([NotNull]CustomUser user, string passwordHash, CancellationToken cancellationToken = default(CancellationToken))
         {
 			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(user, nameof(user));
+
             if (!user.IsExternalUser)
             {
                 Guard.ArgumentNotNullOrEmpty(passwordHash, nameof(passwordHash));
@@ -21,10 +22,9 @@
 			return Task.CompletedTask;
         }
 
-        public Task<string> GetPasswordHashAsync(CustomUser user, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> GetPasswordHashAsync([NotNull]CustomUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
 			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(user, nameof(user));
 
             return Task.FromResult(user.PasswordHash);
         }

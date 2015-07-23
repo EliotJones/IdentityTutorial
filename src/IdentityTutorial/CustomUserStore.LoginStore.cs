@@ -6,15 +6,14 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Core;
+    using JetBrains.Annotations;
     using Microsoft.AspNet.Identity;
 
     public partial class CustomUserStore : IUserLoginStore<CustomUser>
     {
-        public Task AddLoginAsync(CustomUser user, UserLoginInfo login, CancellationToken cancellationToken = default(CancellationToken))
+        public Task AddLoginAsync([NotNull]CustomUser user, [NotNull]UserLoginInfo login, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Guard.ArgumentNotNull(user, nameof(user));
-            Guard.ArgumentNotNull(login, nameof(login));
             
             user.AddLogin(new CustomLogin
             {
@@ -26,10 +25,9 @@
             return Task.CompletedTask;
         }
 
-        public Task RemoveLoginAsync(CustomUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
+        public Task RemoveLoginAsync([NotNull]CustomUser user, [NotNull]string loginProvider, [NotNull]string providerKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Guard.ArgumentNotNull(user, nameof(user));
             Guard.ArgumentNotNullOrEmpty(loginProvider, nameof(loginProvider));
             Guard.ArgumentNotNullOrEmpty(providerKey, nameof(providerKey));
 
@@ -38,14 +36,14 @@
             return Task.CompletedTask;
         }
 
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(CustomUser user, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IList<UserLoginInfo>> GetLoginsAsync([NotNull]CustomUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Guard.ArgumentNotNull(user, nameof(user));
+
             return Task.FromResult(user.CustomLogins.Select(cl => new UserLoginInfo(cl.LoginProvider, cl.ProviderKey, cl.ProviderDisplayName)).ToArray() as IList<UserLoginInfo>);
         }
 
-        public Task<CustomUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<CustomUser> FindByLoginAsync([NotNull]string loginProvider, [NotNull]string providerKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNullOrEmpty(loginProvider, nameof(loginProvider));

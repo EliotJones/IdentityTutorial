@@ -1,4 +1,4 @@
-﻿namespace IdentityTutorial.Store.Mappings
+﻿namespace IdentityTutorial.Data.Mappings
 {
     using System;
     using System.Linq;
@@ -19,6 +19,7 @@
         private static readonly string LockoutEnabled = "lockoutEnabled";
 
         private readonly XmlLoginMap loginMap = new XmlLoginMap();
+        private readonly XmlClaimMap claimMap = new XmlClaimMap();
 
         public CustomUser Map(XElement source)
         {
@@ -35,6 +36,14 @@
             GetNullableDateTime(source.Element(LockoutEndDate).Value),
             GetBool(source.Element(LockoutEnabled).Value));
 
+            GetLogins(user, source);
+            GetClaims(user, source);
+
+            return user;
+        }
+
+        private void GetLogins(CustomUser user, XElement source)
+        {
             if (source.Descendants("login").Any())
             {
                 var logins = source.Descendants("login").Select(loginMap.Map);
@@ -44,8 +53,19 @@
                     user.AddLogin(customLogin);
                 }
             }
+        }
 
-            return user;
+        private void GetClaims(CustomUser user, XElement source)
+        {
+            if (source.Descendants("claim").Any())
+            {
+                var claims = source.Descendants("claim").Select(claimMap.Map);
+
+                foreach (var claim in claims)
+                {
+                    user.AddClaim(claim);
+                }
+            }
         }
 
         private int GetInt(string xmlValue)
@@ -83,10 +103,12 @@
             var lockoutEnabled = new XElement(LockoutEnabled, source.LockoutEnabled);
 
             var logins = new XElement("logins");
-
             logins.Add(source.CustomLogins.Select(loginMap.Map).ToArray());
 
-            return new XElement(User, id, email, password, logins, username, accessFailedCount, lockoutEndDate, lockoutEnabled);
+            var claims = new XElement("claims");
+            claims.Add(source.Claims.Select(claimMap.Map).ToArray());
+
+            return new XElement(User, id, email, password, username, accessFailedCount, lockoutEndDate, lockoutEnabled, claims, logins);
         }
     }
 }

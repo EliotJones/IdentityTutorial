@@ -1,4 +1,4 @@
-﻿namespace IdentityTutorial.Store.Mappings
+﻿namespace IdentityTutorial.Data.Mappings
 {
     using System.Xml.Linq;
     using Core;

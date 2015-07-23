@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{28405C3A-B75F-47BC-947D-6CB7BC8D28E5}"
 EndProject
@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityTutorial", "src\IdentityTutorial\IdentityTutorial.xproj", "{CE32E48B-0046-4F87-8007-478262F8F999}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityTutorial.Store", "src\IdentityTutorial.Store\IdentityTutorial.Store.xproj", "{FD2FEC70-36EA-40AB-8CB9-694B31203E8C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityTutorial.Data", "src\IdentityTutorial.Data\IdentityTutorial.Data.xproj", "{FD2FEC70-36EA-40AB-8CB9-694B31203E8C}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityTutorial.Tests", "src\IdentityTutorial.Tests\IdentityTutorial.Tests.xproj", "{7C829E01-629F-4AB0-A88B-B89CE6307300}"
 EndProject

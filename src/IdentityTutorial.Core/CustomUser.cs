@@ -8,7 +8,7 @@
     {
         private DateTime passwordLastUpdated;
 
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
         public string UserName { get; private set; }
 
@@ -22,11 +22,15 @@
 
         public bool LockoutEnabled { get; private set; }
 
-        private IList<CustomLogin> customLogins;
+        private readonly IList<CustomLogin> customLogins = new List<CustomLogin>();
+
+        private readonly IList<CustomUserClaim> claims = new List<CustomUserClaim>();
+
+        public IEnumerable<CustomUserClaim> Claims => claims.AsEnumerable().Skip(0);  
 
         public IEnumerable<CustomLogin> CustomLogins => customLogins.AsEnumerable().Skip(0);
 
-        public bool IsExternalUser { get; private set; }
+        public bool IsExternalUser { get; }
 
         public CustomUser(Guid id, string emailAddress, string userName, string passwordHash, int accessFailedCount, DateTimeOffset? lockoutEndDate, bool lockoutEnabled)
         {
@@ -38,7 +42,6 @@
             LockoutEndDate = lockoutEndDate;
             LockoutEnabled = lockoutEnabled;
             passwordLastUpdated = DateTime.UtcNow;
-            customLogins = new List<CustomLogin>();
         }
 
         public CustomUser(string emailAddress)
@@ -47,7 +50,6 @@
             EmailAddress = emailAddress;
             LockoutEnabled = true;
             UserName = emailAddress;
-            customLogins = new List<CustomLogin>();
         }
 
         private CustomUser(bool isExternalUser, CustomLogin customLogin, string userName)
@@ -95,6 +97,11 @@
             customLogins.Add(login);
         }
 
+        public void AddClaim(CustomUserClaim claim)
+        {
+            claims.Add(claim);
+        }
+
         public void RemoveLogin(string provider, string key)
         {
             var index = customLogins.IndexOf(
@@ -135,6 +142,29 @@
         public static CustomUser CreateFromExternalSource(CustomLogin customLogin, string userName)
         {
             return new CustomUser(true, customLogin, userName);
+        }
+
+        public void RemoveClaim(CustomUserClaim claim)
+        {
+            foreach (var customUserClaim in claims.Where(c => c.Type.Equals(claim.Type, StringComparison.OrdinalIgnoreCase) && StringEqual(c.Type, claim.Type)))
+            {
+                claims.Remove(customUserClaim);
+            }
+        }
+
+        private bool StringEqual(string s1, string s2)
+        {
+            if (s1 == s2)
+            {
+                return true;
+            }
+
+            if (s1 != null)
+            {
+                return s1.Equals(s2, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
         }
     }
 }

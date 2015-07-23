@@ -1,4 +1,4 @@
-﻿namespace IdentityTutorial.Store.Mappings
+﻿namespace IdentityTutorial.Data.Mappings
 {
     public interface IMap<in TSource, out TDestination>
     {

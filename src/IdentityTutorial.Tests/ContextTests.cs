@@ -3,20 +3,12 @@
     using System;
     using System.Linq;
     using IdentityTutorial.Core;
-    using IdentityTutorial.Store;
+    using IdentityTutorial.Data;
     using Xunit;
 
     public partial class ContextTests
     {
         private const string AnyString = "test";
-        public static string FirstUserId = "B2019313-BEEB-4344-BEC7-F4E0EEB0CE62";
-        public static string FirstUserEmail = "test@test.com";
-        public static string FirstUserPassword = "ABCDEFG";
-        public static string SecondUserId = "A0010313-BEEB-4344-BEC7-F4E0EEB0CE62";
-        public static string SecondUserEmail = "test2@test.com";
-        public static string SecondUserPassword = "HASHEDP";
-        public static string SecondUserLoginKey = "7357653";
-        public static string SecondUserLoginProvider = "Toast";
         private readonly Context context;
 
         public ContextTests()
@@ -31,15 +23,15 @@
             var result = context.GetUsers();
 
             Assert.Equal(2, result.Count);
-            Assert.Equal(FirstUserEmail, result[0].EmailAddress);
+            Assert.Equal(Constants.FirstUserEmail, result[0].EmailAddress);
         }
 
         [Fact]
         public void GetUserById_ReturnsExpectedUser()
         {
-            var result = context.GetUserById(new Guid(FirstUserId));
+            var result = context.GetUserById(new Guid(Constants.FirstUserId));
 
-            Assert.Equal(FirstUserEmail, result.EmailAddress);
+            Assert.Equal(Constants.FirstUserEmail, result.EmailAddress);
         }
 
         [Fact]
@@ -53,10 +45,10 @@
         [Fact]
         public void GetUserByEmail_ReturnsNull()
         {
-            var result = context.GetUserByEmail(FirstUserEmail);
+            var result = context.GetUserByEmail(Constants.FirstUserEmail);
 
-            Assert.Equal(FirstUserEmail, result.EmailAddress);
-            Assert.Equal(new Guid(FirstUserId), result.Id);
+            Assert.Equal(Constants.FirstUserEmail, result.EmailAddress);
+            Assert.Equal(new Guid(Constants.FirstUserId), result.Id);
         }
 
         [Fact]
@@ -65,7 +57,7 @@
             var userId = new Guid("56DDA58C-1ACC-4ABF-A3DD-55EDB262159C");
 
             context.AddUser(new CustomUser(userId, "test3@test.com", AnyString,
-                string.Empty));
+                string.Empty, 0, null, true));
 
             Assert.Contains(userId, context.GetUsers().Select(u => u.Id));
         }
@@ -73,7 +65,7 @@
         [Fact]
         public void AddUser_DuplicateUser_Throws()
         {
-            Assert.Throws<InvalidOperationException>(() => context.AddUser(new CustomUser(new Guid(FirstUserId), SecondUserEmail, AnyString, string.Empty)));
+            Assert.Throws<InvalidOperationException>(() => context.AddUser(new CustomUser(new Guid(Constants.FirstUserId), Constants.SecondUserEmail, AnyString, string.Empty, 0, null, false)));
         }
 
         [Fact]
@@ -91,7 +83,7 @@
         [Fact]
         public void EditUser_MissingUser_Throws()
         {
-            Assert.Throws<InvalidOperationException>(() => context.UpdateUser(new CustomUser(new Guid("5EE37BB8-6381-47E5-A6D2-4B6D035B1D47"), FirstUserEmail, AnyString, string.Empty)));
+            Assert.Throws<InvalidOperationException>(() => context.UpdateUser(new CustomUser(new Guid("5EE37BB8-6381-47E5-A6D2-4B6D035B1D47"), Constants.FirstUserEmail, AnyString, string.Empty, 0, null, true)));
         }
 
         [Fact]
@@ -99,7 +91,7 @@
         {
             var email = "email@email.com";
 
-            context.UpdateUser(new CustomUser(new Guid(FirstUserId), email, AnyString, string.Empty));
+            context.UpdateUser(new CustomUser(new Guid(Constants.FirstUserId), email, AnyString, string.Empty, 0, null, true));
 
             Assert.Contains(email, context.GetUsers().Select(u => u.EmailAddress));
         }
@@ -107,16 +99,16 @@
         [Fact]
         public void DeleteUser_ValidUser_Succeeds()
         {
-            context.DeleteUser(new Guid(FirstUserId));
+            context.DeleteUser(new Guid(Constants.FirstUserId));
 
-            Assert.Null(context.GetUserById(new Guid(FirstUserId)));
+            Assert.Null(context.GetUserById(new Guid(Constants.FirstUserId)));
         }
 
         [Fact]
         public void DeleteUsers_Both_DeletesBoth()
         {
-            context.DeleteUser(new Guid(SecondUserId));
-            context.DeleteUser(new Guid(FirstUserId));
+            context.DeleteUser(new Guid(Constants.SecondUserId));
+            context.DeleteUser(new Guid(Constants.FirstUserId));
 
             Assert.Empty(context.GetUsers());
         }
@@ -124,19 +116,19 @@
         [Fact]
         public void DeleteUser_Twice_Deletes()
         {
-            context.DeleteUser(new Guid(SecondUserId));
-            context.DeleteUser(new Guid(SecondUserId));
+            context.DeleteUser(new Guid(Constants.SecondUserId));
+            context.DeleteUser(new Guid(Constants.SecondUserId));
 
-            Assert.Null(context.GetUserById(new Guid(SecondUserId)));
+            Assert.Null(context.GetUserById(new Guid(Constants.SecondUserId)));
         }
 
         [Fact]
         public void Delete_ThenUpdate_Throws()
         {
-            context.DeleteUser(new Guid(SecondUserId));
+            context.DeleteUser(new Guid(Constants.SecondUserId));
 
             Assert.Throws<InvalidOperationException>(
-                () => context.UpdateUser(new CustomUser(new Guid(SecondUserId), "any@email.com", AnyString, string.Empty)));
+                () => context.UpdateUser(new CustomUser(new Guid(Constants.SecondUserId), "any@email.com", AnyString, string.Empty, 0, null, true)));
         }
 
         [Fact]
@@ -144,9 +136,52 @@
         {
             var email = "any@b.com";
 
-            context.UpdateUser(new CustomUser(new Guid(SecondUserId), email, AnyString, string.Empty));
+            context.UpdateUser(new CustomUser(new Guid(Constants.SecondUserId), email, AnyString, string.Empty, 0, null, true));
 
-            Assert.Equal(new Guid(SecondUserId), context.GetUserByEmail(email).Id);
+            Assert.Equal(new Guid(Constants.SecondUserId), context.GetUserByEmail(email).Id);
+        }
+
+        [Fact]
+        public void GetUserWithClaims_ReturnsExpectedNumberOfClaims()
+        {
+            var user = context.GetUserById(new Guid(Constants.FirstUserId));
+
+            Assert.Equal(2, user.Claims.Count());
+        }
+
+        [Fact]
+        public void GetUserWithClaims_ReturnsExpectedClaimTypes()
+        {
+            var user = context.GetUserById(new Guid(Constants.FirstUserId));
+            var expectedClaimTypes = new[] {Constants.FirstUserFirstClaimType, Constants.FirstUserSecondClaimType};
+
+            Assert.Equal(expectedClaimTypes, user.Claims.Select(c => c.Type));
+        }
+
+        [Fact]
+        public void GetUserWithClaims_ReturnsExpectedClaimValues()
+        {
+            var user = context.GetUserById(new Guid(Constants.FirstUserId));
+            var expectedClaimValues = new[] { Constants.FirstUserFirstClaimValue, Constants.FirstUserSecondClaimValue };
+
+            Assert.Equal(expectedClaimValues, user.Claims.Select(c => c.Value));
+        }
+
+        [Fact]
+        public void GetUserWithNoClaims_ReturnsEmptyList()
+        {
+            var user = context.GetUserById(new Guid(Constants.SecondUserId));
+
+            Assert.NotNull(user.Claims);
+            Assert.Empty(user.Claims);
+        }
+
+        [Fact]
+        public void GetUsersWithClaim_ReturnsResult()
+        {
+            var result = context.GetUsersWithClaim(Constants.FirstUserFirstClaimType, Constants.FirstUserFirstClaimValue);
+
+            Assert.Equal(1, result.Count);
         }
     }
 }
