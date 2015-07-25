@@ -1,28 +1,45 @@
 ﻿namespace IdentityTutorial.Web.Controllers
 {
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using Core;
+    using Microsoft.AspNet.Authorization;
+    using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Mvc;
 
     public class HomeController : Controller
     {
-        public HomeController()
+        private readonly UserManager<CustomUser> userManager;
+        private readonly SignInManager<CustomUser> signInManager;
+
+        public HomeController(UserManager<CustomUser> userManager, SignInManager<CustomUser> signInManager)
         {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
+            ViewBag.HasVisitedAboutPage = false;
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.HasVisitedAboutPage = User.HasClaim("about-page-visitor", "yes");
+            }
+
             return View();
         }
 
-        public IActionResult About()
+        [Authorize]
+        public async Task<IActionResult> About()
         {
-            ViewBag.Message = "Your application description page.";
+            if (!User.HasClaim(c => c.Type == "about-page-visitor"))
+            {
+                var user = await userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            return View();
-        }
+                await userManager.AddClaimAsync(user, new Claim("about-page-visitor", "yes"));
 
-        public IActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+                await signInManager.RefreshSignInAsync(user);
+            }
 
             return View();
         }

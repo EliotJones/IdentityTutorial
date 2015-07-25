@@ -59,6 +59,13 @@
                 options.AppSecret = appSecret;
             });
 
+            services.ConfigureIdentity(options =>
+            {
+                options.User.RequireUniqueEmail = false;
+                options.User.UserNameValidationRegex = @"^[\d\w\s@\-\.]+$";
+                options.Lockout.MaxFailedAccessAttempts = 3;
+            });
+
             services.AddCors();
         }
 

@@ -30,7 +30,8 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Identity tutorial</h2>
-        <p class="lead">This site is running the tutorial code hosted <a href="https://github.com/EliotJones/IdentityTutorial" target="_blank" title="Code repository on GitHub">on Github</a> for a Core CLR, MVC 6 and Identity 3.0 system.</p>
+        <p class="lead">This site is running the tutorial code hosted <a href="https://github.com/EliotJones/IdentityTutorial" target="_blank" title="Code repository on GitHub">on Github</a> for a Core CLR, MVC 6 and Identity 3.0 system.
+        </p>
         <p>The site currently supports:</p>
         <ul>
             <li>Registration</li>
@@ -39,6 +40,16 @@
         </ul>
     </div>
 </div>
+
+@if (ViewBag.HasVisitedAboutPage)
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Hello valued about page visitor.</h3>
+        </div>
+    </div>
+}
+
 
 <style>
     .color-banner {

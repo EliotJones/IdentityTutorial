@@ -15,13 +15,13 @@
     {
         private readonly UserManager<CustomUser> userManager;
         private readonly SignInManager<CustomUser> signInManager;
-        private readonly IUserStore<CustomUser> store;
+        private readonly IUserValidator<CustomUser> userValidator;
 
-        public AccountController(UserManager<CustomUser> userManager, SignInManager<CustomUser> signInManager, IUserStore<CustomUser> store)
+        public AccountController(UserManager<CustomUser> userManager, SignInManager<CustomUser> signInManager, IUserValidator<CustomUser> userValidator)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.store = store;
+            this.userValidator = userValidator;
         }
 
         [HttpGet]
@@ -142,6 +142,8 @@
                     ProviderDisplayName = info.LoginProvider,
                     ProviderKey = info.ProviderKey
                 }, info.ExternalPrincipal.GetUserName());
+
+                var results = await userValidator.ValidateAsync(userManager, user);
 
                 await userManager.CreateAsync(user);
 
